@@ -1,0 +1,48 @@
+.wg-inv {
+  border-left: 1px dashed #888;
+  border-top: 1px dashed #888;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+
+  .inv {
+    background-position: 3px 50%;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    border-bottom: 1px dashed #888;
+    border-right: 1px dashed #888;
+    line-height: 30px;
+    padding-left: 33px;
+
+    &.aquatic {
+      background-image: url(img/ingredient-aquatic.png);
+    }
+
+    &.bark {
+      background-image: url(img/ingredient-bark.png);
+    }
+
+    &.flower {
+      background-image: url(img/ingredient-flower.png);
+    }
+
+    &.fruit {
+      background-image: url(img/ingredient-fruit.png);
+    }
+
+    &.fungus {
+      background-image: url(img/ingredient-fungus.png);
+    }
+
+    &.leaf {
+      background-image: url(img/ingredient-leaf.png);
+    }
+
+    &.nut {
+      background-image: url(img/ingredient-nut.png);
+    }
+
+    &.root {
+      background-image: url(img/ingredient-root.png);
+    }
+  }
+}

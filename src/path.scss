@@ -1,0 +1,188 @@
+#wg-path {
+  width: 100%;
+  aspect-ratio: 2;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: relative;
+
+  &.spring {
+    background-image: url(img/path-spring.jpg);
+
+    #wg-forage1 {
+      left: 3.2%;
+      top: 10.4%;
+    }
+
+    #wg-forage2 {
+      left: 25.4%;
+      top: 8%;
+    }
+
+    #wg-forage3 {
+      left: 47%;
+      top: 6.2%;
+    }
+
+    #wg-forage4 {
+      left: 65.9%;
+      top: 6.4%;
+    }
+
+    #wg-forage5 {
+      left: 95.9%;
+      top: 9.5%;
+    }
+
+    #wg-forage6 {
+      left: 97%;
+      top: 52.5%;
+    }
+
+    #wg-forage7 {
+      left: 84.2%;
+      top: 94.1%;
+    }
+
+    #wg-forage8 {
+      left: 53.7%;
+      top: 91.1%;
+    }
+
+    #wg-forage9 {
+      left: 35%;
+      top: 91.4%;
+    }
+
+    #wg-forage10 {
+      left: 6.7%;
+      top: 83.5%;
+    }
+
+    #wg-forage11 {
+      left: 3.3%;
+      top: 50.3%;
+    }
+
+    #wg-forage12 {
+      left: 18.8%;
+      top: 35.6%;
+    }
+
+    #wg-forage13 {
+      left: 26.1%;
+      top: 49.2%;
+    }
+
+    #wg-forage14 {
+      left: 18.1%;
+      top: 56.1%;
+    }
+
+    #wg-forage15 {
+      left: 41%;
+      top: 29.8%;
+    }
+
+    #wg-forage16 {
+      left: 47.1%;
+      top: 38.8%;
+    }
+
+    #wg-forage17 {
+      left: 54.3%;
+      top: 27.9%;
+    }
+
+    #wg-forage18 {
+      left: 61.7%;
+      top: 35.8%;
+    }
+
+    #wg-forage19 {
+      left: 73.7%;
+      top: 33.5%;
+    }
+
+    #wg-forage20 {
+      left: 41.1%;
+      top: 67%;
+    }
+
+    #wg-forage21 {
+      left: 55.9%;
+      top: 60.3%;
+    }
+
+    #wg-forage22 {
+      left: 64.1%;
+      top: 69.6%;
+    }
+
+    #wg-forage23 {
+      left: 71.3%;
+      top: 59%;
+    }
+
+    #wg-forage24 {
+      left: 79.2%;
+      top: 65.9%;
+    }
+  }
+
+  &.fall {
+    background-image: url(img/path-fall.jpg);
+  }
+}
+
+.forage {
+  aspect-ratio: 1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  border-radius: 50%;
+  border: 3px solid black;
+  box-shadow: 4px 4px 8px black;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 5%;
+
+  &.aquatic {
+    background-color: #00849d;
+    background-image: url(img/ingredient-aquatic.png);
+  }
+
+  &.bark {
+    background-color: #765137;
+    background-image: url(img/ingredient-bark.png);
+  }
+
+  &.flower {
+    background-color: #ae6caa;
+    background-image: url(img/ingredient-flower.png);
+  }
+
+  &.fruit {
+    background-color: #c64971;
+    background-image: url(img/ingredient-fruit.png);
+  }
+
+  &.fungus {
+    background-color: #d2491f;
+    background-image: url(img/ingredient-fungus.png);
+  }
+
+  &.leaf {
+    background-color: #69a33c;
+    background-image: url(img/ingredient-leaf.png);
+  }
+
+  &.nut {
+    background-color: #da8b0c;
+    background-image: url(img/ingredient-nut.png);
+  }
+
+  &.root {
+    background-color: #cbc6a9;
+    background-image: url(img/ingredient-root.png);
+  }
+}
