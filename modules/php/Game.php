@@ -20,81 +20,71 @@ declare(strict_types=1);
 
 namespace Bga\Games\WildGardens;
 
-use Bga\Games\WildGardens\States\PlayerTurn;
+use Bga\Games\WildGardens\States\PlayerMove;
 use Bga\GameFramework\Components\Counters\PlayerCounter;
+use Bga\Games\WildGardens\Path;
 
 class Game extends \Bga\GameFramework\Table
 {
-  const INGREDIENTS = [
-    'aquatic' => [
-      'count' => 2
-    ],
-    'bark' => [
-      'count' => 2
-    ],
-    'flower' => [
-      'count' => 3
-    ],
-    'fruit' => [
-      'count' => 3
-    ],
-    'fungus' => [
-      'count' => 4
-    ],
-    'leaf' => [
-      'count' => 3
-    ],
-    'nut' => [
-      'count' => 4
-    ],
-    'root' => [
-      'count' => 3
-    ]
+  public Path $path;
+  public PlayerCounter $distance1;
+  public PlayerCounter $distance2;
+  public PlayerCounter $distance3;
+  public PlayerCounter $distance4;
+  public PlayerCounter $distanceWild;
+  public PlayerCounter $jar;
+  public PlayerCounter $pathSpace;
+  public PlayerCounter $aquatic;
+  public PlayerCounter $bark;
+  public PlayerCounter $flower;
+  public PlayerCounter $fruit;
+  public PlayerCounter $fungus;
+  public PlayerCounter $leaf;
+  public PlayerCounter $nut;
+  public PlayerCounter $root;
+
+  private array $playerCounters = [
+    'distance1',
+    'distance2',
+    'distance3',
+    'distance4',
+    'distanceWild',
+    'jar',
+    'pathSpace',
+    'aquatic',
+    'bark',
+    'flower',
+    'fruit',
+    'fungus',
+    'leaf',
+    'nut',
+    'root'
   ];
-
-  public static array $CARD_TYPES;
-
-  public PlayerCounter $playerEnergy;
 
   public function __construct()
   {
     parent::__construct();
 
-    $this->playerEnergy = $this->bga->counterFactory->createPlayerCounter('energy');
+    // Game options
+    $this->initGameStateLabels([
+      'optionPath' => 100
+    ]);
 
-    self::$CARD_TYPES = [
-      1 => [
-        'card_name' => clienttranslate('Troll'), // ...
-      ],
-      2 => [
-        'card_name' => clienttranslate('Goblin'), // ...
-      ],
-      // ...
-    ];
+    // Player counters
+    foreach ($this->playerCounters as $counterName) {
+      $this->$counterName = $this->bga->counterFactory->createPlayerCounter($counterName);
+    }
 
-    /* example of notification decorator.
-    // automatically complete notification args when needed
-    $this->bga->notify->addDecorator(function(string $message, array $args) {
-        if (isset($args['player_id']) && !isset($args['player_name']) && str_contains($message, '${player_name}')) {
-            $args['player_name'] = $this->getPlayerNameById($args['player_id']);
-        }
-    
-        if (isset($args['card_id']) && !isset($args['card_name']) && str_contains($message, '${card_name}')) {
-            $args['card_name'] = self::$CARD_TYPES[$args['card_id']]['card_name'];
-            $args['i18n'][] = ['card_name'];
-        }
-        
-        return $args;
-    });*/
-  }
-
-  public function getGameProgression()
-  {
-    // TODO: compute and return the game progression
-    return 0;
+    // Path
+    $this->path = new Path($this);
   }
 
   public function upgradeTableDb($from_version) {}
+
+  public function getGameProgression()
+  {
+    return 0;
+  }
 
   protected function getAllDatas(int $currentPlayerId): array
   {
@@ -102,48 +92,52 @@ class Game extends \Bga\GameFramework\Table
     $result['players'] = $this->getCollectionFromDb(
       'SELECT `player_id` AS `id`, `player_score` AS `score` FROM `player`'
     );
-    // $this->playerEnergy->fillResult($result);
+    foreach ($this->playerCounters as $counterName) {
+      $this->$counterName->fillResult($result);
+    }
 
-    $result['path'] = $this->bga->globals->get('path');
+    $result['path'] = $this->path;
 
     return $result;
   }
 
-  /**
-   * This method is called only once, when a new game is launched. In this method, you must setup the game
-   *  according to the game rules, so that the game is ready to be played.
-   */
+  function getSpecificColorPairings(): array
+  {
+    return [
+      "72c3b1" /* Cyan */        => "2cafcb",
+      "982fff" /* Purple */      => "746db0",
+      "e94190" /* Pink */        => "ec647a",
+      "ffa500" /* Yellow */      => "fad965",
+    ];
+  }
+
   protected function setupNewGame($players, $options = [])
   {
-    $this->playerEnergy->initDb(array_keys($players), initialValue: 2);
-
-    // Set the colors of the players with HTML color code. The default below is red/green/blue/orange/brown. The
-    // number of colors defined here must correspond to the maximum number of players allowed for the gams.
-    $gameinfos = $this->getGameinfos();
-    $default_colors = $gameinfos['player_colors'];
-
-    foreach ($players as $player_id => $player) {
-      // Now you can access both $player_id and $player array
-      $query_values[] = vsprintf("(%s, '%s', '%s')", [
-        $player_id,
-        array_shift($default_colors),
-        addslashes($player['player_name']),
-      ]);
+    // Player counters
+    foreach ($this->playerCounters as $counterName) {
+      $initialValue = str_starts_with($counterName, "distance") ? 1 : 0;
+      $this->$counterName->initDb(array_keys($players), $initialValue);
     }
 
-    // Create players based on generic information.
-    //
-    // NOTE: You can add extra field on player table in the database (see dbmodel.sql) and initialize
-    // additional fields directly here.
-    static::DbQuery(
-      sprintf(
-        'INSERT INTO `player` (`player_id`, `player_color`, `player_name`) VALUES %s',
-        implode(',', $query_values)
-      )
-    );
-
+    // Players
+    $gameinfos = $this->getGameinfos();
+    $colors = $gameinfos['player_colors'];
+    $startSpaces = [1, 2, 11, 10];
+    foreach ($players as $playerId => $player) {
+      $query_values[] = vsprintf("(%s, '%s', '%s')", [
+        $playerId,
+        array_shift($colors),
+        addslashes($player['player_name']),
+      ]);
+      $space = array_shift($startSpaces);
+      $this->pathSpace->set($playerId, $space, null);
+    }
+    static::DbQuery(sprintf('INSERT INTO `player` (`player_id`, `player_color`, `player_name`) VALUES %s', implode(', ', $query_values)));
     $this->reattributeColorsBasedOnPreferences($players, $gameinfos['player_colors']);
     $this->reloadPlayersBasicInfos();
+
+    // Path
+    $this->path->setup();
 
     // Init global values with their initial values.
 
@@ -155,32 +149,64 @@ class Game extends \Bga\GameFramework\Table
     // $this->tableStats->init('table_teststat1', 0);
     // $this->playerStats->init('player_teststat1', 0);
 
-    // TODO: Setup the initial game situation here.
-    $this->setupPath();
-
     // Activate first player once everything has been initialized and ready.
     $this->activeNextPlayer();
-
-    return PlayerTurn::class;
+    return PlayerMove::class;
   }
 
-  public function setupPath()
+  public function getIngredientIcon(string $ingredient): ?string
   {
-    $forage = [];
-    foreach (self::INGREDIENTS as $k => $v) {
-      $forage = array_merge($forage, array_fill(0, $v['count'], $k));
+    switch ($ingredient) {
+      case 'aquatic':
+        return '💧';
+      case 'bark':
+        return '🪵';
+      case 'flower':
+        return '🌸';
+      case 'fruit':
+        return '🍓';
+      case 'fungus':
+        return '🍄';
+      case 'leaf':
+        return '🥬';
+      case 'nut':
+        return '🥜';
+      case 'root':
+        return '🧄';
+      default:
+        return null;
     }
-    shuffle($forage);
-    $path = [
-      'type' => 'spring',
-      'forage' => $forage
-    ];
-    $this->bga->globals->set('path', $path);
   }
+
+  public function getIngredientName(string $ingredient): ?string
+  {
+    switch ($ingredient) {
+      case 'aquatic':
+        return clienttranslate('Aquatic');
+      case 'bark':
+        return clienttranslate('Bark/Stem');
+      case 'flower':
+        return clienttranslate('Flower');
+      case 'fruit':
+        return clienttranslate('Fruit');
+      case 'fungus':
+        return clienttranslate('Fungus');
+      case 'leaf':
+        return clienttranslate('Leaf');
+      case 'nut':
+        return clienttranslate('Nut/Seed');
+      case 'root':
+        return clienttranslate('Root');
+      default:
+        return null;
+    }
+  }
+
 
   public function debug_setupPath()
   {
-    $this->setupPath();
+    $this->path->setup();
+    $this->bga->notify->all('path', clienttranslate('New path'), ['path' => $this->path]);
   }
 
   /**

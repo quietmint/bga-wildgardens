@@ -16,51 +16,88 @@
  * onEnteringState, onLeavingState and onPlayerActivationChange are predefined names that will be called by the framework.
  * When executing code in this state, you can access the args using this.args
  */
-class PlayerTurn {
+class PlayerMove {
   constructor(game, bga) {
     this.game = game;
     this.bga = bga;
+    this.cleanup = [];
   }
 
-  /**
-   * This method is called each time we are entering the game state. You can use this method to perform some user interface changes at this moment.
-   */
   onEnteringState(args, isCurrentPlayerActive) {
-    this.bga.statusBar.setTitle(isCurrentPlayerActive ? _("${you} must play a card or pass") : _("${actplayer} must play a card or pass"));
-
     if (isCurrentPlayerActive) {
-      const playableCardsIds = args.playableCardsIds; // returned by the PlayerTurn::getArgs
-
-      // Add test action buttons in the action status bar, simulating a card click:
-      playableCardsIds.forEach((cardId) => this.bga.statusBar.addActionButton(_("Play card with id ${card_id}").replace("${card_id}", cardId), () => this.onCardClick(cardId)));
-
-      this.bga.statusBar.addActionButton(_("Pass"), () => this.bga.actions.performAction("actPass"), { color: "secondary" });
+      const player = this.game.gamedatas.players[this.bga.players.getActivePlayerId()];
+      Object.keys(args.possible).forEach((space) => {
+        const el = document.getElementById("wg-space" + space);
+        el.classList.add("wg-space-possible");
+        el.style.borderColor = "#" + player.color;
+        const listener = () => this.onClick(args, space);
+        el.addEventListener("click", listener);
+        this.cleanup.push(() => el.removeEventListener("click", listener));
+      });
     }
   }
 
-  /**
-   * This method is called each time we are leaving the game state. You can use this method to perform some user interface changes at this moment.
-   */
-  onLeavingState(args, isCurrentPlayerActive) {}
+  onLeavingState(args, isCurrentPlayerActive) {
+    for (let el of document.querySelectorAll("#wg-path .wg-space-possible")) {
+      el.classList.remove("wg-space-possible");
+      el.style = null;
+    }
+    for (let cleanup of this.cleanup) {
+      cleanup();
+    }
+  }
 
-  /**
-   * This method is called each time the current player becomes active or inactive in a MULTIPLE_ACTIVE_PLAYER state. You can use this method to perform some user interface changes at this moment.
-   * on MULTIPLE_ACTIVE_PLAYER states, you may want to call this function in onEnteringState using `this.onPlayerActivationChange(args, isCurrentPlayerActive)` at the end of onEnteringState.
-   * If your state is not a MULTIPLE_ACTIVE_PLAYER one, you can delete this function.
-   */
-  onPlayerActivationChange(args, isCurrentPlayerActive) {}
+  onClick(args, space) {
+    const distances = args.possible[space];
+    if (distances.length > 1) {
+      this.bga.statusBar.removeActionButtons();
+      for (let distance of distances) {
+        this.bga.statusBar.addActionButton(_("Move ${distance}"), () => this.bga.actions.performAction("actMove", { space, distance }));
+      }
+      this.bga.statusBar.addActionButton(_("Cancel"), () => this.bga.statusBar.removeActionButtons(), { color: "secondary" });
+    } else {
+      this.bga.actions.performAction("actMove", { space, distance: distances[0] });
+    }
+  }
+}
 
-  onCardClick(card_id) {
-    console.log("onCardClick", card_id);
+class PlayerSkills {
+  constructor(game, bga) {
+    this.game = game;
+    this.bga = bga;
+    this.cleanup = [];
+  }
 
-    this.bga.actions
-      .performAction("actPlayCard", {
-        card_id,
-      })
-      .then(() => {
-        // What to do after the server call if it succeeded
-        // (most of the time, nothing, as the game will react to notifs / change of state instead, so you can delete the `then`)
-      });
+  onEnteringState(args, isCurrentPlayerActive) {
+    if (isCurrentPlayerActive) {
+      this.bga.statusBar.addActionButton(_("End Turn"), () => this.bga.actions.performAction("actEndTurn", {}), { color: "secondary" });
+      const player = this.game.gamedatas.players[this.bga.players.getActivePlayerId()];
+      if (args.forages && args.forages.length > 0) {
+        for (let forage of args.forages) {
+          const el = document.getElementById("wg-forage" + forage);
+          el.classList.add("wg-forage-possible");
+          el.style.borderColor = "#" + player.color;
+          const listener = () => this.onClickForage(args, forage);
+          el.addEventListener("click", listener);
+          this.cleanup.push(() => el.removeEventListener("click", listener));
+        }
+      }
+    }
+  }
+
+  onLeavingState(args, isCurrentPlayerActive) {
+    for (let el of document.querySelectorAll("#wg-path .wg-forage-possible")) {
+      el.classList.remove("wg-forage-possible");
+      el.style = null;
+    }
+    for (let cleanup of this.cleanup) {
+      cleanup();
+    }
+  }
+
+  onClickForage(args, forage) {
+    console.log("onClickForage", args, forage);
+    this.bga.actions.performAction("actForage", { forage });
   }
 }
 
@@ -70,8 +107,8 @@ export class Game {
     this.bga = bga;
 
     // Declare the State classes
-    this.playerTurn = new PlayerTurn(this, bga);
-    this.bga.states.register("PlayerTurn", this.playerTurn);
+    this.bga.states.register("PlayerMove", new PlayerMove(this, bga));
+    this.bga.states.register("PlayerSkills", new PlayerSkills(this, bga));
 
     // Uncomment the next line to show debug informations about state changes in the console. Remove before going to production!
     this.bga.states.logger = console.log;
@@ -85,109 +122,127 @@ export class Game {
     this.gamedatas = gamedatas;
     console.log("Setup", gamedatas);
 
-    this.renderPath(gamedatas.path);
-
-    // Setting up player boards
+    this.renderPath();
     Object.values(gamedatas.players).forEach((player) => {
       this.renderPlayerInventory(player);
-
-      // example of setting up players boards
-      this.bga.playerPanels.getElement(player.id).insertAdjacentHTML(
-        "beforeend",
-        `
-        <span id="energy-player-counter-${player.id}"></span> Energy
-      `,
-      );
-      const counter = new ebg.counter();
-      counter.create(`energy-player-counter-${player.id}`, {
-        value: player.energy,
-        playerCounter: "energy",
-        playerId: player.id,
-      });
-
-      // example of adding a div for each player
-      // document.getElementById("player-tables").insertAdjacentHTML(
-      //   "beforeend",
-      //   `
-      //   <div id="player-table-${player.id}">
-      //     <strong>${player.name}</strong>
-      //     <div>Player zone content goes here</div>
-      //   </div>
-      // `,
-      // );
     });
 
-    // TODO: Set up your game interface here, according to "gamedatas"
-
-    // Setup game notifications to handle (see "setupNotifications" method below)
-    this.setupNotifications();
-
-    console.log("Ending game setup");
+    // Notifications
+    this.bga.notifications.setupPromiseNotifications({
+      logger: console.log,
+    });
   }
 
-  renderPath(path) {
-    let html = `<div id="wg-path" class="${path.type}">`;
-    let i = 1;
-    for (let f of path.forage) {
-      html += `<div id="wg-forage${i}" class="forage ${f}"></div>`;
-      i++;
+  renderPath() {
+    const path = this.gamedatas.path;
+    let pathEl = document.getElementById("wg-path");
+    if (pathEl == null) {
+      let html = `<div id="wg-path" class="wg-${path.type}">`;
+      // Forage tokens
+      let i = 1;
+      for (let forage of path.forage) {
+        const title = this.getIngredientName(forage);
+        html += `<div id="wg-forage${i}" class="wg-forage wg-${forage}" title="${title}">${i}</div>`;
+        i++;
+      }
+      // Spaces
+      for (i = 1; i <= path.spaces; i++) {
+        html += `<div id="wg-space${i}" class="wg-space wg-space${i}">${i}</div>`;
+      }
+      // Players
+      for (let player of Object.values(this.gamedatas.players)) {
+        const avatar = this.bga.players.getPlayerAvatarUrl(player.id);
+        html += `<div id="wg-player-${player.id}" class="wg-player wg-space${player.pathSpace}" style="background-color: #${player.color}; background-image: url(${avatar}); border-color: #${player.color};" title="${player.name}"></div>`;
+      }
+      html += `</div>`;
+      this.bga.gameArea.getElement().insertAdjacentHTML("beforeend", html);
+    } else {
+      // Update path type
+      pathEl.classList.remove("wg-spring", "wg-fall");
+      pathEl.classList.add("wg-" + path.type);
+
+      // Update forage tokens
+      let i = 1;
+      for (let forage of path.forage) {
+        const forageEl = document.getElementById("wg-forage" + i);
+        forageEl.classList.remove("wg-aquatic", "wg-bark", "wg-flower", "wg-fruit", "wg-fungus", "wg-leaf", "wg-nut", "wg-root");
+        forageEl.classList.add("wg-" + forage);
+        forageEl.title = this.getIngredientName(forage);
+        i++;
+      }
+
+      // Add/remove space 14
+      const space14El = document.getElementById("wg-space14");
+      if (space14El == null && path.spaces == 14) {
+        const space13El = document.getElementById("wg-space13");
+        space13El.insertAdjacentHTML("afterend", '<div id="wg-space14" class="wg-space wg-space14">14</div>');
+      } else if (space14El != null && path.spaces == 13) {
+        space14El.remove();
+      }
     }
-    html += `</div>`;
-    this.bga.gameArea.getElement().insertAdjacentHTML("beforeend", html);
   }
 
   renderPlayerInventory(player) {
     const ingredients = ["aquatic", "bark", "flower", "fruit", "fungus", "leaf", "nut", "root"];
-    let invEl = document.getElementById(`wg-inv-${player.id}`);
+    let invEl = document.getElementById(`wg-inventory-${player.id}`);
     if (invEl == null) {
-      let html = `<div id="wg-inv-${player.id}" class="wg-inv">`;
-      for (i of ingredients) {
-        html += `<div id="wg-inv-${i}-${player.id}" class="inv ${i}">0</div>`;
+      let html = `<div id="wg-inventory-${player.id}" class="wg-inventory">`;
+      for (let ingredient of ingredients) {
+        const title = this.getIngredientName(ingredient);
+        html += `<div id="wg-inv-${ingredient}-${player.id}" class="wg-inv wg-${ingredient}" title="${title}"></div>`;
       }
       html += `</div>`;
       this.bga.playerPanels.getElement(player.id).insertAdjacentHTML("beforeend", html);
+      for (let ingredient of ingredients) {
+        const counter = new ebg.counter();
+        counter.create(`wg-inv-${ingredient}-${player.id}`, { value: player[ingredient], playerCounter: ingredient, playerId: player.id });
+      }
     }
+  }
+
+  ///////////////////////////////////////////////////
+  //// Notifications
+
+  async notif_move(args) {
+    const playerEl = document.getElementById(`wg-player-${args.player_id}`);
+    for (let i = 1; i <= this.gamedatas.path.spaces; i++) {
+      playerEl.classList.remove("wg-space" + i);
+    }
+    playerEl.classList.add("wg-space" + args.space);
+  }
+
+  async notif_path(args) {
+    this.gamedatas.path = args.path;
+    this.renderPath();
+  }
+
+  async notif_setPlayerCounter(args) {
+    const { name, value, oldValue, inc, absInc, playerId } = args;
   }
 
   ///////////////////////////////////////////////////
   //// Utility methods
 
-  /*
-  
-    Here, you can defines some utility methods that you can use everywhere in your javascript
-    script. Typically, functions that are used in multiple state classes or outside a state class.
-  
-  */
-
-  ///////////////////////////////////////////////////
-  //// Reaction to cometD notifications
-
-  /*
-    setupNotifications:
-    
-    In this method, you associate each of your game notifications with your local method to handle it.
-    
-    Note: game notification names correspond to "bga->notify->all" calls in your Game.php file.
-  
-  */
-  setupNotifications() {
-    console.log("notifications subscriptions setup");
-
-    // automatically listen to the notifications, based on the `notif_xxx` function on this class.
-    // Uncomment the logger param to see debug information in the console about notifications.
-    this.bga.notifications.setupPromiseNotifications({
-      // logger: console.log
-    });
+  getIngredientName(ingredient) {
+    switch (ingredient) {
+      case "aquatic":
+        return "Aquatic";
+      case "bark":
+        return "Bark/Stem";
+      case "flower":
+        return "Flower";
+      case "fruit":
+        return "Fruit";
+      case "fungus":
+        return "Fungus";
+      case "leaf":
+        return "Leaf";
+      case "nut":
+        return "Nut/Seed";
+      case "root":
+        return "Root";
+      default:
+        return null;
+    }
   }
-
-  // TODO: from this point and below, you can write your game notifications handling methods
-
-  /*
-  Example:
-  async notif_cardPlayed( args ) {
-    // Note: args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
-    
-    // TODO: play the card in the user interface.
-  }
-  */
 }

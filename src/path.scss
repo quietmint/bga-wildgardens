@@ -1,13 +1,15 @@
 #wg-path {
-  width: 100%;
   aspect-ratio: 2;
-  background-size: contain;
   background-repeat: no-repeat;
+  background-size: contain;
+  container-type: size;
   position: relative;
+  width: 100%;
 
-  &.spring {
+  &.wg-spring {
     background-image: url(img/path-spring.jpg);
 
+    // Forage tokens
     #wg-forage1 {
       left: 3.2%;
       top: 10.4%;
@@ -127,62 +129,364 @@
       left: 79.2%;
       top: 65.9%;
     }
+
+    // Spaces
+    .wg-space1 {
+      left: 89%;
+      top: 32%;
+    }
+
+    .wg-space2 {
+      left: 89.7%;
+      top: 66.5%;
+    }
+
+    .wg-space3 {
+      left: 73%;
+      top: 85%;
+    }
+
+    .wg-space4 {
+      left: 54.5%;
+      top: 79.8%;
+    }
+
+    .wg-space5 {
+      left: 29.5%;
+      top: 81%;
+    }
+
+    .wg-space6 {
+      left: 14.2%;
+      top: 74.4%;
+    }
+
+    .wg-space7 {
+      left: 10%;
+      top: 34%;
+    }
+
+    .wg-space8 {
+      left: 27.9%;
+      top: 22.7%;
+    }
+
+    .wg-space9 {
+      left: 47%;
+      top: 18.5%;
+    }
+
+    .wg-space10 {
+      left: 65.3%;
+      top: 19%;
+    }
+
+    .wg-space11 {
+      left: 75%;
+      top: 47%;
+    }
+
+    .wg-space12 {
+      left: 55.7%;
+      top: 48.5%;
+    }
+
+    .wg-space13 {
+      left: 36.5%;
+      top: 51%;
+    }
   }
 
-  &.fall {
+  &.wg-fall {
     background-image: url(img/path-fall.jpg);
+
+    // Forage tokens
+    #wg-forage1 {
+      top: 8%;
+      left: 3.4%;
+    }
+
+    #wg-forage2 {
+      top: 9.5%;
+      left: 14.7%;
+    }
+
+    #wg-forage3 {
+      top: 7.4%;
+      left: 30.4%;
+    }
+
+    #wg-forage4 {
+      top: 14%;
+      left: 42%;
+    }
+
+    #wg-forage5 {
+      top: 11.5%;
+      left: 54.7%;
+    }
+
+    #wg-forage6 {
+      top: 6.5%;
+      left: 67.4%;
+    }
+
+    #wg-forage7 {
+      top: 20.1%;
+      left: 86.9%;
+    }
+
+    #wg-forage8 {
+      top: 8.6%;
+      left: 95.2%;
+    }
+
+    #wg-forage9 {
+      top: 29.1%;
+      left: 95.9%;
+    }
+
+    #wg-forage10 {
+      top: 65.8%;
+      left: 95.9%;
+    }
+
+    #wg-forage11 {
+      top: 85.9%;
+      left: 95%;
+    }
+
+    #wg-forage12 {
+      top: 91.1%;
+      left: 69.7%;
+    }
+
+    #wg-forage13 {
+      top: 89.5%;
+      left: 46.8%;
+    }
+
+    #wg-forage14 {
+      top: 87.3%;
+      left: 27.1%;
+    }
+
+    #wg-forage15 {
+      top: 88.2%;
+      left: 9.1%;
+    }
+
+    #wg-forage16 {
+      top: 51.3%;
+      left: 3.4%;
+    }
+
+    #wg-forage17 {
+      top: 52.2%;
+      left: 13.5%;
+    }
+
+    #wg-forage18 {
+      top: 53.1%;
+      left: 23.1%;
+    }
+
+    #wg-forage19 {
+      top: 45.1%;
+      left: 44.9%;
+    }
+
+    #wg-forage20 {
+      top: 39.2%;
+      left: 61.4%;
+    }
+
+    #wg-forage21 {
+      top: 46%;
+      left: 72.9%;
+    }
+
+    #wg-forage22 {
+      top: 61.5%;
+      left: 72.3%;
+    }
+
+    #wg-forage23 {
+      top: 61.9%;
+      left: 61.5%;
+    }
+
+    #wg-forage24 {
+      top: 56.1%;
+      left: 53.2%;
+    }
+
+    // Spaces
+    .wg-space1 {
+      left: 34%;
+      top: 44%;
+    }
+
+    .wg-space2 {
+      left: 46.8%;
+      top: 27%;
+    }
+
+    .wg-space3 {
+      left: 64%;
+      top: 25.5%;
+    }
+
+    .wg-space4 {
+      left: 79.1%;
+      top: 31%;
+    }
+
+    .wg-space5 {
+      left: 88.5%;
+      top: 50%;
+    }
+
+    .wg-space6 {
+      top: 28.4%;
+      left: 8.3%;
+    }
+
+    .wg-space7 {
+      top: 30%;
+      left: 21.5%;
+    }
+
+    .wg-space8 {
+      top: 8%;
+      left: 78.5%;
+    }
+
+    .wg-space9 {
+      top: 72.5%;
+      left: 8.3%;
+    }
+
+    .wg-space10 {
+      top: 71.8%;
+      left: 26.8%;
+    }
+
+    .wg-space11 {
+      top: 73%;
+      left: 49%;
+    }
+
+    .wg-space12 {
+      top: 78.3%;
+      left: 61.4%;
+    }
+
+    .wg-space13 {
+      top: 81%;
+      left: 77%;
+    }
+
+    .wg-space14 {
+      top: 68.3%;
+      left: 84.5%;
+    }
   }
 }
 
-.forage {
+.wg-forage {
   aspect-ratio: 1;
   background-position: center;
   background-repeat: no-repeat;
   background-size: 75%;
   border-radius: 50%;
-  border: 3px solid black;
-  box-shadow: 4px 4px 8px black;
+  box-shadow: 0 0 1cqw white;
+  color: #00000066;
+  font-size: 2.5cqw;
+  line-height: 5cqw;
   position: absolute;
+  text-align: center;
   transform: translate(-50%, -50%);
   width: 5%;
 
-  &.aquatic {
+  &.wg-aquatic {
     background-color: #00849d;
     background-image: url(img/ingredient-aquatic.png);
   }
 
-  &.bark {
+  &.wg-bark {
     background-color: #765137;
     background-image: url(img/ingredient-bark.png);
   }
 
-  &.flower {
+  &.wg-flower {
     background-color: #ae6caa;
     background-image: url(img/ingredient-flower.png);
   }
 
-  &.fruit {
+  &.wg-fruit {
     background-color: #c64971;
     background-image: url(img/ingredient-fruit.png);
   }
 
-  &.fungus {
+  &.wg-fungus {
     background-color: #d2491f;
     background-image: url(img/ingredient-fungus.png);
   }
 
-  &.leaf {
+  &.wg-leaf {
     background-color: #69a33c;
     background-image: url(img/ingredient-leaf.png);
   }
 
-  &.nut {
+  &.wg-nut {
     background-color: #da8b0c;
     background-image: url(img/ingredient-nut.png);
   }
 
-  &.root {
+  &.wg-root {
     background-color: #cbc6a9;
     background-image: url(img/ingredient-root.png);
   }
+
+  &.wg-forage-possible {
+    border: 1cqw solid black;
+    box-shadow:
+      0 0 1cqw black,
+      0 0 4cqw black;
+    cursor: pointer;
+  }
+}
+
+.wg-space {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: #00000066;
+  font-size: 2.5cqw;
+  line-height: 5cqw;
+  position: absolute;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  width: 5%;
+
+  &.wg-space-possible {
+    border: 1cqw solid black;
+    box-shadow:
+      0 0 1cqw black,
+      0 0 4cqw black;
+    cursor: pointer;
+  }
+}
+
+.wg-player {
+  aspect-ratio: 1;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+  border: 0.5cqw solid black;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: all 0.5s ease-out;
+  width: 5%;
 }

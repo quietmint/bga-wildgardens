@@ -1,10 +1,10 @@
-.wg-inv {
+.wg-inventory {
   border-left: 1px dashed #888;
   border-top: 1px dashed #888;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
 
-  .inv {
+  .wg-inv {
     background-position: 3px 50%;
     background-repeat: no-repeat;
     background-size: 24px;
@@ -13,35 +13,35 @@
     line-height: 30px;
     padding-left: 33px;
 
-    &.aquatic {
+    &.wg-aquatic {
       background-image: url(img/ingredient-aquatic.png);
     }
 
-    &.bark {
+    &.wg-bark {
       background-image: url(img/ingredient-bark.png);
     }
 
-    &.flower {
+    &.wg-flower {
       background-image: url(img/ingredient-flower.png);
     }
 
-    &.fruit {
+    &.wg-fruit {
       background-image: url(img/ingredient-fruit.png);
     }
 
-    &.fungus {
+    &.wg-fungus {
       background-image: url(img/ingredient-fungus.png);
     }
 
-    &.leaf {
+    &.wg-leaf {
       background-image: url(img/ingredient-leaf.png);
     }
 
-    &.nut {
+    &.wg-nut {
       background-image: url(img/ingredient-nut.png);
     }
 
-    &.root {
+    &.wg-root {
       background-image: url(img/ingredient-root.png);
     }
   }

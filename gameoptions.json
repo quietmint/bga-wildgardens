@@ -1,1 +1,28 @@
-{}
+{
+	"100": {
+		"name": "Path Board",
+		"values": {
+			"0": {
+				"name": "Spring Path",
+				"tmdisplay": "Spring Path"
+			},
+			"1": {
+				"name": "Fall Path",
+				"tmdisplay": "Fall Path",
+				"nobeginner": true
+			},
+			"2": {
+				"name": "Random Path",
+				"tmdisplay": "Random Path",
+				"nobeginner": true
+			},
+			"3": {
+				"name": "Both Paths",
+				"tmdisplay": "Both Paths",
+				"description": "Start with a random path (spring or fall) and switch to the other path halfway through the game",
+				"nobeginner": true
+			}
+		},
+		"default": 1
+	}
+}
