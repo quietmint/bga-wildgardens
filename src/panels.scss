@@ -1,0 +1,70 @@
+@use "material-colors" as *;
+
+.wg-tokens {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 0.6fr 0.6fr 0.6fr 0.6fr 0.6fr;
+}
+
+.wg-inventory {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.wg-inventory .wg-inv,
+.wg-tokens .wg-jar {
+  background-position: 3px 50%;
+  background-repeat: no-repeat;
+  background-size: 24px;
+  line-height: 30px;
+  padding-left: 33px;
+}
+
+.wg-inv-float {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.wg-dist {
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+  line-height: 24px;
+  text-align: center;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+  width: 24px;
+
+  &.color-72c3b1 {
+    background-color: #72c3b1;
+    background-color: $color-teal-300;
+    background-image: linear-gradient(-30deg, $color-teal-500, $color-teal-200);
+  }
+
+  &.color-982fff {
+    background-color: #982fff;
+    background-color: $color-purple-300;
+    background-image: linear-gradient(-30deg, $color-purple-500, $color-purple-200);
+  }
+
+  &.color-e94190 {
+    background-color: #e94190;
+    background-color: $color-pink-300;
+    background-image: linear-gradient(-30deg, $color-pink-500, $color-pink-200);
+  }
+
+  &.color-ffa500 {
+    background-color: #ffa500;
+    background-color: $color-orange-300;
+    background-image: linear-gradient(-30deg, $color-orange-500, $color-orange-200);
+  }
+
+  &.color-disabled {
+    background-color: $color-grey-400;
+    color: rgba(0, 0, 0, 0.5);
+    cursor: not-allowed;
+    text-shadow: 1px 1px rgba(255, 255, 255, 0.5);
+  }
+}

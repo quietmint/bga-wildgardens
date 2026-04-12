@@ -1,0 +1,120 @@
+@use "material-colors" as *;
+
+.wg-log-icon {
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  height: 24px;
+  vertical-align: middle;
+  width: 24px;
+}
+
+.wg-point-icon {
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  height: 16px;
+  vertical-align: text-top;
+  width: 16px;
+}
+
+.wg-aquatic,
+.wg-💧 {
+  background-image: url(img/ingredient-aquatic.png);
+}
+
+.wg-bark,
+.wg-🪵 {
+  background-image: url(img/ingredient-bark.png);
+}
+
+.wg-flower,
+.wg-🌸 {
+  background-image: url(img/ingredient-flower.png);
+}
+
+.wg-fruit,
+.wg-🍓 {
+  background-image: url(img/ingredient-fruit.png);
+}
+
+.wg-fungus,
+.wg-🍄 {
+  background-image: url(img/ingredient-fungus.png);
+}
+
+.wg-leaf,
+.wg-🥬 {
+  background-image: url(img/ingredient-leaf.png);
+}
+
+.wg-nut,
+.wg-🥜 {
+  background-image: url(img/ingredient-nut.png);
+}
+
+.wg-root,
+.wg-🧄 {
+  background-image: url(img/ingredient-root.png);
+}
+
+.wg-jar {
+  background-image: url(img/jar.png);
+}
+
+.wg-picnic {
+  background-image: url(img/picnic.png);
+}
+
+.wg-star {
+  background-image: url(img/star.png);
+}
+
+.wg-player {
+  aspect-ratio: 1;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+  border-style: solid;
+  transition: all 0.5s ease-out;
+
+  &.color-72c3b1 {
+    background-color: $color-teal-300;
+    border-color: $color-teal-300;
+  }
+
+  &.color-982fff {
+    background-color: $color-purple-300;
+    border-color: $color-purple-300;
+  }
+
+  &.color-e94190 {
+    background-color: $color-pink-300;
+    border-color: $color-pink-300;
+  }
+
+  &.color-ffa500 {
+    background-color: $color-orange-300;
+    border-color: $color-orange-300;
+  }
+}
+
+.wg-player-name {
+  font-weight: bold;
+
+  &.color-72c3b1 {
+    color: $color-teal-300;
+  }
+
+  &.color-982fff {
+    color: $color-purple-300;
+  }
+
+  &.color-e94190 {
+    color: $color-pink-300;
+  }
+
+  &.color-ffa500 {
+    color: $color-orange-300;
+  }
+}

@@ -1,0 +1,32 @@
+@use "material-colors" as *;
+
+.wg-title {
+  font-weight: bold;
+  font-style: italic;
+  line-height: 1.25em;
+  text-align: center;
+  text-shadow: 1px 1px rgba(255, 255, 255, 0.5);
+
+  &::before,
+  &::after {
+    content: " § ";
+    font-size: 80%;
+    opacity: 0.5;
+  }
+
+  &.color-72c3b1 {
+    color: $color-teal-300;
+  }
+
+  &.color-982fff {
+    color: $color-purple-300;
+  }
+
+  &.color-e94190 {
+    color: $color-pink-300;
+  }
+
+  &.color-ffa500 {
+    color: $color-orange-300;
+  }
+}

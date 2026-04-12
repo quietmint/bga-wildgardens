@@ -34,15 +34,27 @@ class PlayerMove extends GameState
 	#[PossibleAction]
 	public function actMove(int $space, int $distance, int $activePlayerId, array $args)
 	{
-		if (!array_key_exists($space, $args['possible']) || !in_array($distance, $args['possible'][$space])) {
+		if (!array_key_exists($space, $args['possible']) || !in_array($distance, $args['possible'][$space]['distances'])) {
 			throw new UserException('Invalid move');
 		}
 
+		// Use action token
+		$distanceCounter = "distance$distance";
+		if ($this->game->$distanceCounter->get($activePlayerId) == 1) {
+			$this->game->$distanceCounter->set($activePlayerId, 0, null);
+		} else {
+			throw new UserException('Invalid move');
+		}
+
+		// Move on path
 		$this->game->pathSpace->set($activePlayerId, $space, null);
-		$this->bga->notify->all('move', clienttranslate('${player_name} moves to space ${space}'), [
+		$this->bga->notify->all('move', clienttranslate('${player_name} moves using ${distanceName}'), [
+			'distance' => $distance,
+			'distanceName' => $distance ?: "×",
 			'player_id' => $activePlayerId,
 			'player_name' => $this->game->getPlayerNameById($activePlayerId),
-			'space' => $space
+			'preserve' => ['player_id'],
+			'space' => $space,
 		]);
 
 		return PlayerSkills::class;

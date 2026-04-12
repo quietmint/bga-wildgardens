@@ -1,0 +1,33 @@
+@use "material-colors" as *;
+
+.wg-playerboard {
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 8px;
+  height: 400px;
+  margin-bottom: 5px;
+  padding: 5px;
+
+  .wg-player-name {
+    color: white;
+  }
+
+  &.color-72c3b1 {
+    background-color: $color-teal-300;
+    background-image: url(img/playerboard-blue.jpg);
+  }
+
+  &.color-982fff {
+    background-color: $color-purple-300;
+    background-image: url(img/playerboard-purple.jpg);
+  }
+
+  &.color-e94190 {
+    background-color: $color-pink-300;
+  }
+
+  &.color-ffa500 {
+    background-color: $color-orange-300;
+  }
+}

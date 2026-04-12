@@ -1,10 +1,22 @@
+@use "material-colors" as *;
+
 #wg-path {
   aspect-ratio: 2;
   background-repeat: no-repeat;
   background-size: contain;
+  border-radius: 8px;
   container-type: size;
+  margin-bottom: 5px;
   position: relative;
   width: 100%;
+
+  .wg-player {
+    border-width: 0.5cqw;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease-out;
+    width: 5%;
+  }
 
   &.wg-spring {
     background-image: url(img/path-spring.jpg);
@@ -399,94 +411,118 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 75%;
+  border: 2px solid white;
   border-radius: 50%;
-  box-shadow: 0 0 1cqw white;
-  color: #00000066;
-  font-size: 2.5cqw;
-  line-height: 5cqw;
   position: absolute;
   text-align: center;
   transform: translate(-50%, -50%);
+  transition: border 0.5s ease-out;
   width: 5%;
 
   &.wg-aquatic {
     background-color: #00849d;
-    background-image: url(img/ingredient-aquatic.png);
   }
 
   &.wg-bark {
     background-color: #765137;
-    background-image: url(img/ingredient-bark.png);
   }
 
   &.wg-flower {
     background-color: #ae6caa;
-    background-image: url(img/ingredient-flower.png);
   }
 
   &.wg-fruit {
     background-color: #c64971;
-    background-image: url(img/ingredient-fruit.png);
   }
 
   &.wg-fungus {
     background-color: #d2491f;
-    background-image: url(img/ingredient-fungus.png);
   }
 
   &.wg-leaf {
     background-color: #69a33c;
-    background-image: url(img/ingredient-leaf.png);
   }
 
   &.wg-nut {
     background-color: #da8b0c;
-    background-image: url(img/ingredient-nut.png);
   }
 
   &.wg-root {
     background-color: #cbc6a9;
-    background-image: url(img/ingredient-root.png);
+  }
+}
+
+.wg-forage-possible {
+  border-width: 1cqw;
+  box-shadow:
+    0 0 1cqw white,
+    0 0 2cqw white;
+  cursor: pointer;
+
+  &.color-72c3b1 {
+    border-color: $color-teal-300;
   }
 
-  &.wg-forage-possible {
-    border: 1cqw solid black;
-    box-shadow:
-      0 0 1cqw black,
-      0 0 4cqw black;
-    cursor: pointer;
+  &.color-982fff {
+    border-color: $color-purple-300;
+  }
+
+  &.color-e94190 {
+    border-color: $color-pink-300;
+  }
+
+  &.color-ffa500 {
+    border-color: $color-orange-300;
   }
 }
 
 .wg-space {
-  aspect-ratio: 1;
-  border-radius: 50%;
-  color: #00000066;
-  font-size: 2.5cqw;
-  line-height: 5cqw;
   position: absolute;
-  text-align: center;
   transform: translate(-50%, -50%);
-  width: 5%;
-
-  &.wg-space-possible {
-    border: 1cqw solid black;
-    box-shadow:
-      0 0 1cqw black,
-      0 0 4cqw black;
-    cursor: pointer;
-  }
 }
 
-.wg-player {
-  aspect-ratio: 1;
-  background-color: black;
-  background-repeat: no-repeat;
-  background-size: cover;
+.wg-space-possible {
   border-radius: 50%;
-  border: 0.5cqw solid black;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  transition: all 0.5s ease-out;
-  width: 5%;
+  box-shadow:
+    0 0 1cqw black,
+    0 0 3cqw black;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 2.5cqw;
+  font-weight: bold;
+  line-height: 4.5cqw;
+  margin: 0 0.5cqw;
+  text-align: center;
+  text-shadow: 1px 1px #00000080;
+  width: 4.5cqw;
+
+  &.color-72c3b1 {
+    background-color: $color-teal-300;
+    background-image: linear-gradient(-30deg, $color-teal-500, $color-teal-200);
+  }
+
+  &.color-982fff {
+    background-color: $color-purple-300;
+    background-image: linear-gradient(-30deg, $color-purple-500, $color-purple-200);
+  }
+
+  &.color-e94190 {
+    background-color: $color-pink-300;
+    background-image: linear-gradient(-30deg, $color-pink-500, $color-pink-200);
+  }
+
+  &.color-ffa500 {
+    background-color: $color-orange-300;
+    background-image: linear-gradient(-30deg, $color-orange-500, $color-orange-200);
+  }
+
+  .wg-picnic {
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+    height: 0.75em;
+    vertical-align: baseline;
+    width: 0.75em;
+  }
 }

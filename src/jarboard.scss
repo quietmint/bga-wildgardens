@@ -1,0 +1,42 @@
+@use "material-colors" as *;
+
+#wg-jarboard {
+  background-color: var(--bga-player-panel-background);
+  background-image: url(img/jarboard.png);
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  background-size: 75px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  padding: 0 5px 5px 75px;
+
+  table {
+    border-bottom: 1px solid #a1887f;
+    width: 100%;
+
+    th {
+      border-bottom: 1px solid #a1887f;
+    }
+
+    th,
+    td {
+      font-size: 15px;
+      font-weight: bold;
+      line-height: 30px;
+      text-align: center;
+      width: 30px;
+    }
+
+    td {
+      border-left: 1px solid $color-brown-300;
+    }
+  }
+
+  .wg-player {
+    border-width: 3px;
+    display: inline-block;
+    height: 24px;
+    vertical-align: middle;
+    width: 24px;
+  }
+}

@@ -27,12 +27,13 @@ use Bga\Games\WildGardens\Path;
 class Game extends \Bga\GameFramework\Table
 {
   public Path $path;
+  public PlayerCounter $distance0; // wild
   public PlayerCounter $distance1;
   public PlayerCounter $distance2;
   public PlayerCounter $distance3;
   public PlayerCounter $distance4;
-  public PlayerCounter $distanceWild;
   public PlayerCounter $jar;
+  public PlayerCounter $jarScore;
   public PlayerCounter $pathSpace;
   public PlayerCounter $aquatic;
   public PlayerCounter $bark;
@@ -43,22 +44,25 @@ class Game extends \Bga\GameFramework\Table
   public PlayerCounter $nut;
   public PlayerCounter $root;
 
+  public array $jarboard = [0, 2, 3, 5, 6, 10, 12, 16, 18, 22, 26, 30, 35, 38, 40, 42, 44, 46, 48, 50, 51, 52, 53, 54];
+
   private array $playerCounters = [
-    'distance1',
-    'distance2',
-    'distance3',
-    'distance4',
-    'distanceWild',
-    'jar',
-    'pathSpace',
-    'aquatic',
-    'bark',
-    'flower',
-    'fruit',
-    'fungus',
-    'leaf',
-    'nut',
-    'root'
+    'distance0' => 1,
+    'distance1' => 1,
+    'distance2' => 1,
+    'distance3' => 1,
+    'distance4' => 1,
+    'jar' => 1,
+    'jarScore' => 0,
+    'pathSpace' => 0,
+    'aquatic' => 0,
+    'bark' => 0,
+    'flower' => 0,
+    'fruit' => 0,
+    'fungus' => 0,
+    'leaf' => 0,
+    'nut' => 0,
+    'root' => 0,
   ];
 
   public function __construct()
@@ -71,7 +75,7 @@ class Game extends \Bga\GameFramework\Table
     ]);
 
     // Player counters
-    foreach ($this->playerCounters as $counterName) {
+    foreach ($this->playerCounters as $counterName => $initialValue) {
       $this->$counterName = $this->bga->counterFactory->createPlayerCounter($counterName);
     }
 
@@ -88,34 +92,34 @@ class Game extends \Bga\GameFramework\Table
 
   protected function getAllDatas(int $currentPlayerId): array
   {
-    $result = [];
-    $result['players'] = $this->getCollectionFromDb(
-      'SELECT `player_id` AS `id`, `player_score` AS `score` FROM `player`'
-    );
-    foreach ($this->playerCounters as $counterName) {
+    $result = [
+      'jarboard' => $this->jarboard,
+      'path' => $this->path,
+    ];
+    $result['players'] = $this->getCollectionFromDb('SELECT `player_id` AS `id`, `player_score` AS `score` FROM `player`');
+    foreach ($this->playerCounters as $counterName => $initialValue) {
       $this->$counterName->fillResult($result);
     }
-
-    $result['path'] = $this->path;
-
     return $result;
   }
 
   function getSpecificColorPairings(): array
   {
     return [
-      "72c3b1" /* Cyan */        => "2cafcb",
-      "982fff" /* Purple */      => "746db0",
-      "e94190" /* Pink */        => "ec647a",
-      "ffa500" /* Yellow */      => "fad965",
+      '72c3b1' /* Cyan */        => '2cafcb',
+      '0000ff' /* Blue */        => '2cafcb',
+      '982fff' /* Purple */      => '746db0',
+      'e94190' /* Pink */        => 'ec647a',
+      'ff0000' /* Red */         => 'ec647a',
+      'ffa500' /* Yellow */      => 'fad965',
+      'f07f16' /* Orange */      => 'fad965',
     ];
   }
 
   protected function setupNewGame($players, $options = [])
   {
     // Player counters
-    foreach ($this->playerCounters as $counterName) {
-      $initialValue = str_starts_with($counterName, "distance") ? 1 : 0;
+    foreach ($this->playerCounters as $counterName => $initialValue) {
       $this->$counterName->initDb(array_keys($players), $initialValue);
     }
 

@@ -135,6 +135,27 @@ class Path implements \JsonSerializable
 		return $this->getSpace($space);
 	}
 
+	public function getPlayerDistances(int $playerId): array
+	{
+		$distances = [];
+		if ($this->game->distance0->get($playerId) == 1) {
+			$distances[] = 0;
+		}
+		if ($this->game->distance1->get($playerId) == 1) {
+			$distances[] = 1;
+		}
+		if ($this->game->distance2->get($playerId) == 1) {
+			$distances[] = 2;
+		}
+		if ($this->game->distance3->get($playerId) == 1) {
+			$distances[] = 3;
+		}
+		if ($this->game->distance4->get($playerId) == 1) {
+			$distances[] = 4;
+		}
+		return $distances;
+	}
+
 	public function getPlayerMoves(int $playerId): array
 	{
 		// Compute possible moves keyed by distance
@@ -164,31 +185,31 @@ class Path implements \JsonSerializable
 			$queue = $nextQueue;
 		}
 
-		// Remove impossible distances (based on the player's remaining tokens)
-		if (!$this->game->distanceWild->get($playerId)) {
-			if (!$this->game->distance1->get($playerId)) {
-				unset($possibleDistance[1]);
-			}
-			if (!$this->game->distance2->get($playerId)) {
-				unset($possibleDistance[2]);
-			}
-			if (!$this->game->distance3->get($playerId)) {
-				unset($possibleDistance[3]);
-			}
-			if (!$this->game->distance4->get($playerId)) {
-				unset($possibleDistance[4]);
-			}
-		}
+		// Compute player's remaining tokens
+		$playerDistances = $this->getPlayerDistances($playerId);
 
 		// Flip the array so it's keyed by space
 		$possibleMoves = [];
 		foreach ($possibleDistance as $distance => $moves) {
 			foreach ($moves as $move) {
 				if (!array_key_exists($move, $possibleMoves)) {
-					$possibleMoves[$move] = [];
+					$possibleMoves[$move] = [
+						'distances' => [],
+						'picnic' => $this->getSpace($move)->picnic
+					];
 				}
-				if (!in_array($distance, $possibleMoves[$move])) {
-					array_push($possibleMoves[$move], $distance);
+				$thisDistance = $distance;
+				if (!in_array($distance, $playerDistances)) {
+					if (in_array(0, $playerDistances)) {
+						// Allow impossible distances with wild
+						$thisDistance = "0";
+					} else {
+						// Ignore impossible distances
+						continue;
+					}
+				}
+				if (!in_array($thisDistance, $possibleMoves[$move]['distances'])) {
+					array_push($possibleMoves[$move]['distances'], $thisDistance);
 				}
 			}
 		}

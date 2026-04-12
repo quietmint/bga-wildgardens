@@ -41,6 +41,7 @@ class PlayerSkills extends GameState
 
 		$ingredient = $this->game->path->getForage($forage);
 		$msg = new NotificationMessage(clienttranslate('${player_name} collects ${icon} ${ingredient}'), [
+			'forage' => $forage,
 			'i18n' => ['ingredient'],
 			'icon' => $this->game->getIngredientIcon($ingredient),
 			'ingredient' => $this->game->getIngredientName($ingredient),
